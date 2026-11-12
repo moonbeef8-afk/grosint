@@ -1,0 +1,9 @@
+{
+  "name": "groSINT Advanced OSINT Workspace",
+  "short_name": "groSINT",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#090909",
+  "description": "Public-source OSINT and evidence notebook"
+}

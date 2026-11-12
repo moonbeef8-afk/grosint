@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080808"><meta name="description" content="groSINT Advanced public-source investigation workspace">
+<link rel="manifest" href="manifest.webmanifest"><title>groSINT // ADVANCED OSINT</title>
+<style>
+:root{color-scheme:dark;--bg:#080808;--panel:#111;--line:#2b2b2b;--red:#ed343d;--muted:#a1a1a1;--txt:#f4f4f4;--green:#65d69a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#3a090d 0,#100708 30%,#080808 70%);color:var(--txt);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:5;padding:calc(15px + env(safe-area-inset-top)) 16px 13px;background:#090909ed;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{font-size:24px;font-weight:950;letter-spacing:2px}.brand span{color:var(--red)}.sub{font:10px ui-monospace,monospace;letter-spacing:1.8px;color:#aaa;margin-top:3px}
+main{max-width:980px;margin:auto;padding:15px 13px 48px}.topline{font:11px ui-monospace,monospace;color:#ff747a;margin:5px 2px 13px;display:flex;justify-content:space-between;gap:10px}
+nav{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px}nav button{background:#151515;color:#ccc;border:1px solid #303030;border-radius:8px;padding:12px 4px;font-size:11px;font-weight:750}nav button.active{border-color:var(--red);color:white;background:#2a1012;box-shadow:inset 0 0 0 1px #ed343d35}
+.panel{background:linear-gradient(145deg,#151515,#0e0e0e);border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0;box-shadow:0 8px 25px #0004}
+h2{font-size:14px;letter-spacing:1.4px;text-transform:uppercase;margin:0 0 8px}.eyebrow{font:10px ui-monospace,monospace;color:#ff777d;letter-spacing:1.4px;margin-bottom:7px}
+label{display:block;font-size:12px;color:#c2c2c2;margin:12px 0 6px}input,textarea,select{width:100%;background:#080808;color:white;border:1px solid #373737;border-radius:8px;padding:12px;font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--red)}textarea{min-height:90px;resize:vertical}
+button.action{width:100%;border:0;background:var(--red);color:white;border-radius:8px;padding:13px;font-weight:850;margin-top:11px}button.secondary{background:#1d1d1d;border:1px solid #414141;color:#eee}button:disabled{opacity:.45}
+.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}.result{white-space:pre-wrap;overflow-wrap:anywhere;background:#070707;border:1px solid #292929;border-radius:8px;padding:12px;margin-top:12px;font:12px/1.55 ui-monospace,monospace;color:#e4e4e4}.hidden{display:none!important}.hint{font-size:11px;color:var(--muted);line-height:1.55}.links{display:flex;flex-wrap:wrap;gap:8px 15px;margin-top:10px}.links a{color:#ff8186;font-size:12px;text-decoration:none}.links a:after{content:" ↗"}.statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}.stat{background:#080808;border:1px solid #292929;border-radius:8px;padding:10px}.stat b{display:block;font:10px ui-monospace,monospace;color:#aaa;margin-bottom:5px}.stat span{font-size:13px;overflow-wrap:anywhere}.entry{padding:11px 0;border-bottom:1px solid #282828}.entry:last-child{border:0}.entry b{font-size:12px}.entry p{font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;color:#ddd;margin:6px 0}.entry small{color:#888}.pill{display:inline-block;border:1px solid #513034;color:#ff9a9f;border-radius:99px;padding:3px 7px;font:10px ui-monospace,monospace;margin:3px 3px 0 0}
+footer{text-align:center;color:#777;font-size:10px;line-height:1.6;padding:20px 8px}
+@media(min-width:680px){nav{grid-template-columns:repeat(7,1fr)}.statgrid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="brand">gro<span>SINT</span></div><div class="sub">ADVANCED OPEN-SOURCE INTELLIGENCE // v2.0</div></header>
+<main>
+<div class="topline"><span>● PUBLIC-SOURCE WORKSPACE</span><span id="clock">LOCAL SESSION</span></div>
+<nav id="nav">
+<button class="active" data-tab="phone">PHONE</button><button data-tab="ip">IP / DOMAIN</button><button data-tab="email">EMAIL</button><button data-tab="username">USERNAME</button><button data-tab="image">IMAGE</button><button data-tab="cases">EVIDENCE</button><button data-tab="guide">GUIDE</button>
+</nav>
+
+<section id="phone" class="tool">
+<div class="panel"><div class="eyebrow">MODULE 01 // TELEPHONE INTELLIGENCE</div><h2>Phone number investigation</h2>
+<label>Phone number</label><input id="phoneNum" type="tel" placeholder="+49 151 12345678">
+<label>Default region (used if number has no +country code)</label><select id="phoneRegion"><option value="DE">Germany</option><option value="US">United States</option><option value="GB">United Kingdom</option><option value="TR">Türkiye</option><option value="IQ">Iraq</option><option value="SE">Sweden</option><option value="FR">France</option><option value="OTHER">Unknown / other</option></select>
+<button class="action" onclick="phoneInvestigate()">ANALYSE NUMBER</button><div id="phoneOut" class="result hidden"></div><div id="phoneLinks" class="links"></div>
+<p class="hint">Uses Google's libphonenumber metadata library when online. Number validity means numbering-plan plausibility, not proof that the number is active or who owns it. Carrier/subscriber identity is not exposed.</p></div>
+</section>
+
+<section id="ip" class="tool hidden">
+<div class="panel"><div class="eyebrow">MODULE 02 // NETWORK INTELLIGENCE</div><h2>IP address & domain investigation</h2>
+<label>IPv4 / IPv6 address or domain</label><input id="target" placeholder="8.8.8.8 or example.com" autocapitalize="none">
+<button class="action" onclick="networkInvestigate()">RUN PUBLIC LOOKUP</button><div id="networkOut" class="result hidden"></div><div id="networkLinks" class="links"></div>
+<p class="hint">IP geolocation is approximate. Network ownership/ASN describes infrastructure, not necessarily an individual. Domain registration data may be privacy-protected or redacted.</p></div>
+</section>
+
+<section id="email" class="tool hidden">
+<div class="panel"><div class="eyebrow">MODULE 03 // EMAIL INTELLIGENCE</div><h2>Email investigation</h2>
+<label>Email address</label><input id="emailAddr" type="email" placeholder="person@example.com" autocapitalize="none">
+<button class="action" onclick="emailInvestigate()">CHECK ADDRESS & DOMAIN</button><div id="emailOut" class="result hidden"></div>
+<div class="links"><a href="https://haveibeenpwned.com/" target="_blank" rel="noopener">Have I Been Pwned</a><a href="https://epieos.com/" target="_blank" rel="noopener">Epieos</a><a href="https://hunter.io/" target="_blank" rel="noopener">Hunter</a></div>
+<p class="hint">No email is sent to these providers automatically. Breach checks and account discovery must be performed directly on the provider's site and subject to its terms.</p></div>
+</section>
+
+<section id="username" class="tool hidden">
+<div class="panel"><div class="eyebrow">MODULE 04 // HANDLE DISCOVERY</div><h2>Username investigation</h2>
+<label>Username / handle</label><input id="handle" placeholder="example_user" autocapitalize="none">
+<button class="action" onclick="usernameInvestigate()">GENERATE PUBLIC SEARCHES</button><div id="usernameOut" class="result hidden"></div><div id="usernameLinks" class="links"></div>
+<p class="hint">Searches public search engines and platform search pages. Similar handles are leads only; manually verify context before associating accounts.</p></div>
+</section>
+
+<section id="image" class="tool hidden">
+<div class="panel"><div class="eyebrow">MODULE 05 // IMAGE FORENSICS</div><h2>Image investigation</h2>
+<label>Select image for local inspection</label><input id="imgFile" type="file" accept="image/*">
+<button class="action" onclick="imageInvestigate()">INSPECT IMAGE LOCALLY</button><div id="imageOut" class="result hidden"></div>
+<div class="links"><a href="https://lens.google.com/" target="_blank" rel="noopener">Google Lens</a><a href="https://tineye.com/" target="_blank" rel="noopener">TinEye</a><a href="https://www.bing.com/visualsearch" target="_blank" rel="noopener">Bing Visual Search</a></div>
+<p class="hint">The selected image is not uploaded by groSINT. Reverse-image search requires you to choose to upload it to a search provider. This tool does not identify people or infer identity from faces.</p></div>
+</section>
+
+<section id="cases" class="tool hidden">
+<div class="panel"><div class="eyebrow">MODULE 06 // CASE MANAGEMENT</div><h2>Evidence notebook</h2>
+<label>Case ID</label><input id="caseId" placeholder="CASE-2026-001">
+<label>Evidence type</label><select id="evType"><option>Observation</option><option>URL / public source</option><option>Screenshot reference</option><option>Message reference</option><option>Technical result</option><option>Other</option></select>
+<label>Source URL (optional)</label><input id="evUrl" placeholder="https://..." autocapitalize="none">
+<label>Finding / notes</label><textarea id="evNote" placeholder="Record what you observed. Separate verified facts from assumptions."></textarea>
+<label>Attach a file to hash locally (optional)</label><input id="evFile" type="file">
+<button class="action" onclick="addEvidence()">ADD EVIDENCE ENTRY</button>
+<div id="caseOut" class="result">No entries saved in this browser.</div>
+<div class="row"><button class="action secondary" onclick="exportJSON()">EXPORT JSON</button><button class="action secondary" onclick="exportCSV()">EXPORT CSV</button></div>
+<button class="action secondary" onclick="clearEvidence()">DELETE ALL LOCAL ENTRIES</button>
+<p class="hint">Entries are stored in this browser's local storage. Export backups. This notebook is not a certified chain-of-custody system; preserve originals and record how evidence was obtained.</p></div>
+</section>
+
+<section id="guide" class="tool hidden">
+<div class="panel"><div class="eyebrow">FIELD MANUAL // SAFE & REPEATABLE WORKFLOW</div><h2>Investigation workflow</h2>
+<div class="entry"><b>01 — Define the question</b><p>Write down exactly what needs verifying. Avoid starting with an assumption about who someone is.</p></div>
+<div class="entry"><b>02 — Collect public-source leads</b><p>Use the search modules and keep the original source URL, date, and context.</p></div>
+<div class="entry"><b>03 — Corroborate independently</b><p>Seek a second independent source. A username match, IP location, or caller-ID label alone is not proof of identity.</p></div>
+<div class="entry"><b>04 — Preserve evidence</b><p>Keep original screenshots and messages. Record UTC/local timestamps and calculate hashes where useful.</p></div>
+<div class="entry"><b>05 — Escalate safely</b><p>For threats, extortion, or immediate danger, report evidence to the platform and police. Do not confront or publicly expose a suspected person.</p></div>
+<h2 style="margin-top:18px">External public resources</h2>
+<div class="links"><a href="https://www.virustotal.com/" target="_blank">VirusTotal</a><a href="https://www.abuseipdb.com/" target="_blank">AbuseIPDB</a><a href="https://urlscan.io/" target="_blank">URLScan</a><a href="https://who.is/" target="_blank">WHOIS</a><a href="https://crt.sh/" target="_blank">crt.sh</a><a href="https://osintframework.com/" target="_blank">OSINT Framework</a></div>
+</div>
+</section>
+
+<footer>groSINT v2.0 · Independent public-source research workspace · Not affiliated with law enforcement. No private account access, covert tracking, credential attacks, or person-location service.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+$('clock').textContent=new Date().toLocaleString();
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.tool').forEach(s=>s.classList.toggle('hidden',s.id!==b.dataset.tab))});
+function show(id,t){$(id).textContent=t;$(id).classList.remove('hidden')}
+function link(parent,label,url){let a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=label+' ↗';$(parent).append(a)}
+function clearLinks(id){$(id).replaceChildren()}
+async function sha256(file){let b=await file.arrayBuffer(),h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function phoneInvestigate(){
+ const raw=$('phoneNum').value.trim();if(!raw)return alert('Enter a phone number.');
+ const region=$('phoneRegion').value;show('phoneOut','Loading numbering metadata…');clearLinks('phoneLinks');
+ try{
+  if(!window.libphonenumberLoaded){await new Promise((resolve,reject)=>{let s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.20/bundle/libphonenumber-js.min.js';s.onload=resolve;s.onerror=reject;document.head.append(s)});window.libphonenumberLoaded=true}
+  const P=window.libphonenumber;const pn=P.parsePhoneNumber(raw,region==='OTHER'?undefined:region);
+  const lines=['Input: '+raw,'International: '+pn.formatInternational(),'E.164: '+pn.number,'Country: '+(pn.country||'not determined'),'Calling code: +'+pn.countryCallingCode,'Possible: '+pn.isPossible(),'Valid numbering pattern: '+pn.isValid(),'Number type: '+(pn.getType()||'not classified'),'National format: '+pn.formatNational(),'','Validity does not confirm that the number is active, assigned, or owned by a particular person.'];
+  show('phoneOut',lines.join('\n'));
+ }catch(e){show('phoneOut','Could not parse number or load numbering library.\nCheck the number and country selection.');}
+ const q=encodeURIComponent('"'+raw+'"');link('phoneLinks','Google exact search','https://www.google.com/search?q='+q);link('phoneLinks','Tellows','https://www.tellows.de/');link('phoneLinks','Truecaller','https://www.truecaller.com/');
+}
+async function networkInvestigate(){
+ const v=$('target').value.trim();if(!v)return alert('Enter an IP or domain.');
+ show('networkOut','Querying public records…');clearLinks('networkLinks');
+ const ip=/^(?:\d{1,3}\.){4}$/.test(v)||v.includes(':');
+ try{
+  if(ip||/^[\d.]+$/.test(v)){
+   const r=await fetch('https://ipwho.is/'+encodeURIComponent(v));const d=await r.json();if(!d.success)throw Error(d.message||'Lookup failed');
+   show('networkOut',`IP: ${d.ip}\nVersion: ${d.type||'unknown'}\nCountry: ${d.country||'unknown'}\nRegion: ${d.region||'unknown'}\nCity: ${d.city||'unknown'}\nCoordinates: ${d.latitude??'?'} / ${d.longitude??'?'}\nISP: ${d.connection?.isp||'unknown'}\nOrganization: ${d.connection?.org||'unknown'}\nASN: ${d.connection?.asn||'unknown'}\nDomain: ${d.connection?.domain||'unknown'}\n\nLocation is approximate and may represent a VPN, proxy, mobile gateway, or ISP node.`);
+   link('networkLinks','AbuseIPDB report/search','https://www.abuseipdb.com/check/'+encodeURIComponent(v));link('networkLinks','VirusTotal','https://www.virustotal.com/gui/ip-address/'+encodeURIComponent(v));
+  }else{
+   const types=['A','AAAA','MX','NS','TXT','CNAME'];let out='DOMAIN: '+v+'\n';
+   for(const t of types){try{const r=await fetch('https://dns.google/resolve?name='+encodeURIComponent(v)+'&type='+t);const d=await r.json();const ans=(d.Answer||[]).map(x=>x.data);out+='\n'+t+': '+(ans.join(' | ')||'no records returned')}catch(e){out+='\n'+t+': lookup unavailable'}}
+   try{const r=await fetch('https://rdap.org/domain/'+encodeURIComponent(v));if(r.ok){const d=await r.json();out+='\n\nRDAP status: '+(d.status||[]).join(', ');out+='\nRegistrar / entities: '+(d.entities||[]).map(x=>(x.roles||[]).join('/')+' '+(x.handle||'')).join('; ');out+='\nEvents: '+(d.events||[]).map(x=>x.eventAction+': '+x.eventDate).join('; ')}else out+='\n\nRDAP: no public record returned'}catch(e){out+='\n\nRDAP lookup unavailable'}
+   show('networkOut',out+'\n\nRegistration data may be redacted, incomplete, or privacy-protected.');
+   link('networkLinks','WHOIS lookup','https://who.is/whois/'+encodeURIComponent(v));link('networkLinks','Certificate transparency','https://crt.sh/?q='+encodeURIComponent(v));link('networkLinks','URLScan','https://urlscan.io/search/#domain:'+encodeURIComponent(v));link('networkLinks','VirusTotal','https://www.virustotal.com/gui/domain/'+encodeURIComponent(v));
+  }
+ }catch(e){show('networkOut','Lookup failed: '+e.message+'\nTry again or use an external public lookup provider.')}
+}
+async function emailInvestigate(){
+ const e=$('emailAddr').value.trim();if(!e)return alert('Enter an email.');const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e),domain=(e.split('@')[1]||'').toLowerCase();
+ let out='Email: '+e+'\nSyntax plausible: '+ok+'\nDomain: '+domain+'\n';
+ if(domain){try{const r=await fetch('https://dns.google/resolve?name='+encodeURIComponent(domain)+'&type=MX');const d=await r.json();const mx=(d.Answer||[]).filter(x=>x.type===15).map(x=>x.data);out+='MX records: '+(mx.join(' | ')||'none returned')+'\n';out+='MX lookup status: '+(d.Status===0?'DNS response successful':'DNS response status '+d.Status)+'\n'}catch(err){out+='MX lookup unavailable: '+err.message+'\n'}}
+ out+='\nThis does not prove mailbox existence, ownership, or account registration.';show('emailOut',out);
+}
+function usernameInvestigate(){
+ const u=$('handle').value.trim().replace(/^@/,'');if(!u)return alert('Enter a username.');show('usernameOut','Public search links for: '+u+'\nReview matches manually. Similar usernames are not identity proof.');clearLinks('usernameLinks');const q=encodeURIComponent('"'+u+'"');
+ [['Google exact search','https://www.google.com/search?q='+q],['Bing','https://www.bing.com/search?q='+q],['WhatsMyName','https://whatsmyname.app/'],['Reddit','https://www.reddit.com/search/?q='+encodeURIComponent(u)],['TikTok','https://www.tiktok.com/search?q='+encodeURIComponent(u)],['Instagram public search','https://www.google.com/search?q='+encodeURIComponent('site:instagram.com '+u)],['X','https://x.com/search?q='+q],['GitHub users','https://github.com/search?q='+encodeURIComponent(u)+'&type=users'],['YouTube','https://www.youtube.com/results?search_query='+encodeURIComponent(u)]].forEach(x=>link('usernameLinks',x[0],x[1]));
+}
+async function imageInvestigate(){
+ const f=$('imgFile').files[0];if(!f)return alert('Choose an image.');if(!f.type.startsWith('image/'))return alert('Choose an image file.');
+ let dims='unavailable';try{const im=await createImageBitmap(f);dims=im.width+' × '+im.height;im.close()}catch(e){}
+ const hash=await sha256(f);
+ let out=`File: ${f.name}\nMIME type: ${f.type}\nSize: ${f.size.toLocaleString()} bytes\nDimensions: ${dims}\nSHA-256: ${hash}\nLast modified (file metadata): ${new Date(f.lastModified).toISOString()}\n\nHash and dimensions are calculated locally. Last-modified metadata can be changed and is not proof of capture time.`;
+ show('imageOut',out);
+}
+function getEntries(){try{return JSON.parse(localStorage.getItem('grosint_v2_entries')||'[]')}catch(e){return []}}
+function renderEntries(){const arr=getEntries(),el=$('caseOut');el.replaceChildren();if(!arr.length){el.textContent='No entries saved in this browser.';return}arr.slice().reverse().forEach(x=>{const d=document.createElement('div');d.className='entry';const b=document.createElement('b');b.textContent=x.caseId+' · '+x.type;const sm=document.createElement('small');sm.textContent=x.time;const p=document.createElement('p');p.textContent=x.note+(x.url?'\nSource: '+x.url:'')+(x.file?'\nFile: '+x.file+' | SHA-256: '+x.hash:'');d.append(b,sm,p);el.append(d)})}
+async function addEvidence(){
+ const note=$('evNote').value.trim();if(!note)return alert('Add a finding first.');
+ const file=$('evFile').files[0];let hash='';if(file)hash=await sha256(file);
+ const url=$('evUrl').value.trim();if(url){try{new URL(url)}catch(e){return alert('Enter a valid source URL or leave it blank.')}}
+ const entry={caseId:$('caseId').value.trim()||'UNASSIGNED',type:$('evType').value,url,note,file:file?.name||'',hash,time:new Date().toISOString()};
+ const arr=getEntries();arr.push(entry);try{localStorage.setItem('grosint_v2_entries',JSON.stringify(arr))}catch(e){return alert('Browser storage is full. Export your notebook and remove large entries.')};
+ $('evNote').value='';$('evUrl').value='';$('evFile').value='';renderEntries();
+}
+function download(name,content,type){const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function exportJSON(){download('grosint-evidence.json',JSON.stringify(getEntries(),null,2),'application/json')}
+function exportCSV(){const arr=getEntries();const cols=['caseId','type','time','url','note','file','hash'];const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';download('grosint-evidence.csv',[cols.join(','),...arr.map(x=>cols.map(k=>q(x[k])).join(','))].join('\n'),'text/csv')}
+function clearEvidence(){if(confirm('Permanently delete all groSINT v2 evidence entries from this browser?')){localStorage.removeItem('grosint_v2_entries');renderEntries()}}
+renderEntries();
+if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
